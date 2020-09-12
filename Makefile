@@ -26,6 +26,15 @@ COMPILER ?= ido
 # TOUCH CONTROLS
 TOUCH_CONTROLS ?= 1
 
+#From Jan200101's "merge PC port onto the decompile" commit e87c07051765883c6b73d4f43e70eff76f569c88
+#This gives the abilty to set the target bitness to 32
+ifneq ($(TARGET_BITS),0)
+  BITS := -m$(TARGET_BITS)
+else
+  BITS :=
+endif
+
+
 # Automatic settings only for ports
 ifeq ($(TARGET_N64),0)
 
@@ -496,9 +505,10 @@ PLATFORM_CFLAGS += -DNO_SEGMENTED_MEMORY
 ifeq ($(ENABLE_OPENGL),1)
   GFX_CFLAGS  := -DENABLE_OPENGL
   GFX_LDFLAGS :=
+  #Added the BITS flag here from Jan200101's "merge PC port onto the decompile" commit e87c07051765883c6b73d4f43e70eff76f569c88
   ifeq ($(TARGET_WINDOWS),1)
-    GFX_CFLAGS  += $(shell sdl2-config --cflags) -DGLEW_STATIC
-    GFX_LDFLAGS += $(shell sdl2-config --libs) -lglew32 -lopengl32 -lwinmm -limm32 -lversion -loleaut32 -lsetupapi
+    GFX_CFLAGS  += $(BITS) $(shell sdl2-config --cflags) -DGLEW_STATIC
+    GFX_LDFLAGS += $(BITS) $(shell sdl2-config --libs) -lglew32 -lopengl32 -lwinmm -limm32 -lversion -loleaut32 -lsetupapi
   endif
   ifeq ($(TARGET_LINUX),1)
     GFX_CFLAGS  += $(shell sdl2-config --cflags)
