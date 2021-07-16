@@ -55,6 +55,8 @@ static int ControlElementsLength = sizeof(ControlElementsDefault)/sizeof(struct 
                               ((pos.y + size / 2 > CORRECT_TOUCH_Y(event->y)) && (pos.y - size / 2 < CORRECT_TOUCH_Y(event->y))))
 
 void touch_down(struct TouchEvent* event) {
+    set_current_input(touchScreen);
+
     struct Position pos;
     for(int i = 0; i < ControlElementsLength; i++) {
         if (ControlElements[i].touchID == 0) {
@@ -182,6 +184,9 @@ static void DrawSprite(s32 x, s32 y, int scaling) {
 }
 
 void render_touch_controls(void) {
+    if(get_current_input()!=touchScreen)
+        return;
+
     Mtx *mtx;
 
     mtx = alloc_display_list(sizeof(*mtx));
